@@ -1,93 +1,23 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-   <meta charset="UTF-8" />
-   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-   <title>Excel Column Modifier</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Excel Column Modifier</title>
+    <link rel="stylesheet" href="styles.css"> <!-- Link to external CSS -->
 </head>
-
 <body>
-   <h2>Please Select an Excel File</h2>
-   <input type="file" id="fileInput" />
+    <h2>Please Select an Excel File</h2>
+    <input type="file" id="fileInput" />
+    <div id="tableContainer"></div> <!-- Container for the dynamic table -->
 
-   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-
-   <script>
-      document.getElementById("fileInput").addEventListener("change", handleFile);
-
-      function handleFile(event) {
-         const file = event.target.files[0];
-         if (!file) return;
-
-         const reader = new FileReader();
-
-         let jsonData;
-
-         reader.onload = function (e) {
-            const data = new Uint8Array(e.target.result);
-            const workbook = XLSX.read(data, { type: "array" });
-            const sheetName = workbook.SheetNames[0];
-            const worksheet = workbook.Sheets[sheetName];
-
-            jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
-
-            console.log(jsonData);
-
-            // Save jsonData as a JSON file
-            // saveJSONFile(jsonData, 'test.json');
-
-            for (let i = 1; i < jsonData.length; i++) {
-               const current = jsonData[i];
-               const previous = jsonData[i - 1];
-
-               // Check if the first element of the current array is null
-               const isFirstElementNull = current[0] === null;
-
-               console.log("isFirstElementNull:", isFirstElementNull)
-
-               const checkContidion = current.length > 12 ? true : false;
-
-               if (!checkContidion) {
-                  // Get the country code from the last field in the current array
-                  const country = current[current.length - 1];
-
-                  console.log("country code:", country)
-
-                  // Add the country code to the previous array as a new field
-                  previous.push(country);
-
-                  // Remove the current array after processing
-                  jsonData.splice(i, 1);
-                  i--; // Adjust the index to account for the removed element
-               }
-            }
-         console.log(jsonData);
-
-         };
-
-
-
-
-
-         reader.readAsArrayBuffer(file);
-      }
-
-      // function saveJSONFile(data, filename) {
-      //    const json = JSON.stringify(data, null, 2); // Pretty-print JSON with 2 spaces indentation
-      //    const blob = new Blob([json], { type: "application/json" });
-      //    const url = URL.createObjectURL(blob);
-      //    const a = document.createElement("a");
-      //    a.href = url;
-      //    a.download = filename;
-      //    a.click();
-      //    URL.revokeObjectURL(url);
-      // }
-   </script>
+    <!-- Include the XLSX library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    
+    <!-- Include your external JavaScript file -->
+    <script src="app.js"></script>
 </body>
-
 </html>
-
 
 
 <!-- <!DOCTYPE html>
