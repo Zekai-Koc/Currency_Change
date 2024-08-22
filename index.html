@@ -107,3 +107,111 @@
 </body>
 
 </html> -->
+
+
+<!-- <!DOCTYPE html>
+<html lang="en">
+   <head>
+      <meta charset="UTF-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <title>Excel Column Modifier</title>
+      <link rel="stylesheet" href="styles.css" />
+   </head>
+   <body>
+      <h2>Please Select an Excel File</h2>
+      <div id="button-wrapper">
+         <label for="fileInput" class="button-input-label">Choose File</label>
+         <input type="file" id="fileInput" class="button-input" />
+         <button id="exportButton" class="button">Export to XLSX</button>
+      </div>
+
+      <div id="tableContainer"></div>
+
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+      <script src="app.js"></script>
+   </body>
+</html> -->
+
+<!-- <!DOCTYPE html>
+<html lang="en">
+
+<head>
+   <meta charset="UTF-8" />
+   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+   <title>Excel Column Modifier</title>
+</head>
+
+<body>
+   <h2>Please Select an Excel File</h2>
+   <h2>!!! NECiP ABi !!!</h2>
+   <input type="file" id="fileInput" />
+
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+   <script>
+
+      document.getElementById("fileInput").addEventListener("change", handleFile);
+
+      function handleFile(event) {
+         const file = event.target.files[0];
+         if (!file) return;
+
+         const reader = new FileReader();
+
+         reader.onload = function (e) {
+            const data = new Uint8Array(e.target.result);
+            const workbook = XLSX.read(data, { type: "array" });
+            const sheetName = workbook.SheetNames[0];
+            const worksheet = workbook.Sheets[sheetName];
+
+            const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+
+            console.log(jsonData)
+            // jsonData.forEach((row) => {
+            //    // console.log("ROW: ", row)
+            //    // if (row[1] === "New") console.log("ROW: ", row)
+            //    // if (row[6]) {
+            //    //    row[6] = row[6].toString().replace(",", ".");
+            //    // }
+            //    if (row.length === 12) console.log("ROW: ", row)
+            // });
+
+            for (let i = 0; i < jsonData.length; i++) {
+               console.log("ROW: ", jsonData[i])
+               
+            }
+
+            // const newWorksheet = XLSX.utils.aoa_to_sheet(jsonData);
+
+            // workbook.Sheets[sheetName] = newWorksheet;
+
+            // const originalFileName = file.name;
+            // const correctedFileName = originalFileName.replace(
+            //    /\.xlsx$/,
+            //    "_corrected.xlsx"
+            // );
+
+            // const newWorkbook = XLSX.write(workbook, {
+            //    bookType: "xlsx",
+            //    type: "array",
+            // });
+            // const blob = new Blob([newWorkbook], {
+            //    type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            // });
+
+            // const url = URL.createObjectURL(blob);
+            // const a = document.createElement("a");
+            // a.href = url;
+            // a.download = correctedFileName;
+            // a.click();
+            // URL.revokeObjectURL(url);
+         };
+
+         reader.readAsArrayBuffer(file);
+      }
+
+   </script>
+</body>
+
+</html> -->
