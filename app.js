@@ -14,30 +14,20 @@ document.addEventListener("DOMContentLoaded", function () {
       });
 
    let finalData = [];
-   let testFinalData = [];
 
    async function handleFileSelection(file) {
       const jsonData = await readFile(file);
       console.log("jsonData: ", jsonData);
       const testJsonData = [...jsonData];
 
-      // const processedData = filterEmptyRowsAndAddCountryColumn(jsonData);
-      // // console.log("filterEmptyRowsAndAddCountryColumn: ", processedData);
-      // const mappedData = mapData(processedData);
-      // // console.log("mappedData: ", mappedData);
-      // finalData = addShipmentColumn(mappedData, shipments);
-      // // console.log("finalData: ", finalData);
-      // createTable(finalData);
-
       const headers = testJsonData[0];
       testJsonData.splice(0, 1);
       const testMappedRows = mapRowsToHeaders(headers, testJsonData);
       console.log("mappedRows: ", testMappedRows);
-      testFilterEmptyRowsAndAddCountryColumn(testMappedRows);
-      // console.log("testFilterEmptyRowsAndAddCountryColumn: ", testMappedRows);
-      testFinalData = testAddShipmentColumn(testMappedRows, shipments);
-      console.log("testFinalData: ", testFinalData);
-      createTable(testFinalData);
+      filterEmptyRowsAndAddCountryColumn(testMappedRows);
+      finalData = addShipmentColumn(testMappedRows, shipments);
+      console.log("finalData: ", finalData);
+      createTable(finalData);
    }
 
    function mapRowsToHeaders(headers, valuesArray) {
@@ -51,36 +41,6 @@ document.addEventListener("DOMContentLoaded", function () {
    }
 
    function filterEmptyRowsAndAddCountryColumn(data) {
-      for (let i = 0; i < data.length; i++) {
-         const current = data[i];
-         const previous = i > 0 ? data[i - 1] : null;
-
-         const isShipped = current[1] === "Shipped";
-         const isCountryRow = current[0] === null || current[0] === undefined;
-
-         if (isCountryRow && previous) {
-            const country = current[current.length - 1];
-
-            if (typeof country === "string" && country.trim().length === 2) {
-               previous.push(country);
-            } else {
-               previous.push("");
-            }
-
-            data.splice(i, 1);
-            i--;
-         } else if (!isShipped) {
-            data.splice(i, 1);
-            i--;
-         }
-      }
-
-      data[data.length - 1].pop();
-
-      return data;
-   }
-
-   function testFilterEmptyRowsAndAddCountryColumn(data) {
       for (let i = 0; i < data.length; i++) {
          // console.log(`data${[i]}: `, data[i]);
          const current = data[i];
@@ -113,38 +73,7 @@ document.addEventListener("DOMContentLoaded", function () {
       return data;
    }
 
-   function mapData(data) {
-      return data.map((row) => {
-         let totalCharged = row[24];
-
-         if (typeof totalCharged === "string") {
-            totalCharged = totalCharged
-               .replace(/\s[A-Z]{3}/, "")
-               .replace(".", ",");
-         }
-
-         return {
-            "Order ID": row[0],
-            "No. Order Items": row[6],
-            "Total Charged": totalCharged,
-            "Order Date": row[8],
-            "Product(s) name": row[11],
-            IMEI: row[13],
-            Country: row[row.length - 1],
-         };
-      });
-   }
-
    function addShipmentColumn(mappedData, shipments) {
-      return mappedData.map((row) => {
-         const country = row.Country;
-         const shipment = shipments[country] || "";
-         row.Shipment = shipment;
-         return row;
-      });
-   }
-
-   function testAddShipmentColumn(mappedData, shipments) {
       return mappedData.map((row) => {
          const country = row["Country"];
          const shipment = shipments[country] || "";
