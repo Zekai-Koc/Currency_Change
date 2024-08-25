@@ -17,16 +17,16 @@ document.addEventListener("DOMContentLoaded", function () {
 
    async function handleFileSelection(file) {
       const jsonData = await readFile(file);
-      console.log("jsonData: ", jsonData);
-      const testJsonData = [...jsonData];
+      // console.log("jsonData: ", jsonData);
+      // const testJsonData = [...jsonData];
 
-      const headers = testJsonData[0];
-      testJsonData.splice(0, 1);
-      const testMappedRows = mapRowsToHeaders(headers, testJsonData);
-      console.log("mappedRows: ", testMappedRows);
-      filterEmptyRowsAndAddCountryColumn(testMappedRows);
-      finalData = addShipmentColumn(testMappedRows, shipments);
-      console.log("finalData: ", finalData);
+      // const headers = testJsonData[0];
+      // testJsonData.splice(0, 1);
+      const mappedRows = mapRowsToHeaders(headers, jsonData);
+      // console.log("mappedRows: ", mappedRows);
+      filterEmptyRowsAndAddCountryColumn(mappedRows);
+      finalData = addShipmentColumn(mappedRows, shipments);
+      // console.log("finalData: ", finalData);
       createTable(finalData);
    }
 
@@ -91,7 +91,7 @@ document.addEventListener("DOMContentLoaded", function () {
       const tbody = document.createElement("tbody");
 
       // Define headers, including the new "#" column
-      const headers = [
+      const filteredHeaders = [
          "#", // New column for row numbers
          "Order ID",
          "No. Order Items",
@@ -105,7 +105,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
       // Create header row
       const headerRow = document.createElement("tr");
-      headers.forEach((header) => {
+      filteredHeaders.forEach((header) => {
          const th = document.createElement("th");
          th.textContent = header;
          headerRow.appendChild(th);
@@ -122,8 +122,8 @@ document.addEventListener("DOMContentLoaded", function () {
          tr.appendChild(rowNumberTd);
 
          // Add the rest of the data columns
-         headers.slice(1).forEach((header) => {
-            console.log("header: ", header);
+         filteredHeaders.slice(1).forEach((header) => {
+            // console.log("header: ", header);
             const td = document.createElement("td");
             td.textContent = row[`${header}`] !== null ? row[`${header}`] : ""; // Handle null values
             tr.appendChild(td);
