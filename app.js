@@ -26,6 +26,8 @@ document.addEventListener("DOMContentLoaded", function () {
       // console.log("mappedRows: ", mappedRows);
       filterEmptyRowsAndAddCountryColumn(mappedRows);
       finalData = addShipmentColumn(mappedRows, shipments);
+
+      finalData = filterAdditionalColumns(finalData);
       // console.log("finalData: ", finalData);
       createTable(finalData);
    }
@@ -61,12 +63,12 @@ document.addEventListener("DOMContentLoaded", function () {
          }
 
          if (isCountryRow && previous) {
-            previous["Country"] = countryCode; // Assign the country code
-            data.splice(i, 1); // Remove the current country row
-            i--; // Adjust index due to splice
+            previous["Country"] = countryCode;
+            data.splice(i, 1);
+            i--;
          } else if (!shippingState) {
-            data.splice(i, 1); // Remove non-shipped rows
-            i--; // Adjust index due to splice
+            data.splice(i, 1);
+            i--;
          }
       }
 
@@ -92,7 +94,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
       // Define headers, including the new "#" column
       const filteredHeaders = [
-         "#", // New column for row numbers
+         "#",
          "Order ID",
          "No. Order Items",
          "Order Date",
@@ -137,9 +139,35 @@ document.addEventListener("DOMContentLoaded", function () {
       tableContainer.appendChild(table);
    }
 
+   function filterAdditionalColumns(data) {
+      return data.map((row) => {
+         let totalCharged = row[7];
+
+         if (typeof totalCharged === "string") {
+            totalCharged = totalCharged
+               .replace(/\s[A-Z]{3}/, "")
+               .replace(".", ",");
+         }
+
+         return {
+            "Order ID": row["Order ID"],
+            "No. Order Items": row["No. Order Items"],
+            "Order Date": row["Order Date"],
+            "Product(s) name": row["Product(s) name"],
+            "IMEI / Serial number": row["IMEI / Serial number"],
+            Country: row.Country,
+            "Settlement Total paid": row["Settlement Total paid"]
+               .replace(/\s[A-Z]{3}/, "")
+               .replace(".", ","),
+         };
+      });
+   }
+
    function exportToExcel(data, filename = "exported_data.xlsx") {
       console.log(data);
-      const worksheet = XLSX.utils.json_to_sheet(data);
+      const filteredData = filterAdditionalColumns(data);
+      console.log(filteredData);
+      const worksheet = XLSX.utils.json_to_sheet(filteredData);
       const workbook = XLSX.utils.book_new();
       XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1");
       XLSX.writeFile(workbook, filename);
