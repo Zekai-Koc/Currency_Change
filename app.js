@@ -26,9 +26,10 @@ document.addEventListener("DOMContentLoaded", function () {
       // console.log("mappedRows: ", mappedRows);
       filterEmptyRowsAndAddCountryColumn(mappedRows);
       finalData = addShipmentColumn(mappedRows, shipments);
+      console.log("finalData shipment column added: ", finalData);
 
       finalData = filterAdditionalColumns(finalData);
-      // console.log("finalData: ", finalData);
+      console.log("finalData: ", finalData);
       createTable(finalData);
    }
 
@@ -95,15 +96,22 @@ document.addEventListener("DOMContentLoaded", function () {
       // Define headers, including the new "#" column
       const filteredHeaders = [
          "#",
-         "Order ID",
-         "No. Order Items",
-         "Order Date",
          "Product(s) name",
+         "No. Order Items",
+         "C",
+         "Order Date",
          "IMEI / Serial number",
-         "Country",
          "Shipment",
          "Settlement Total paid",
+         "H",
+         "I",
+         "J",
+         "Order ID",
+         "Country",
       ];
+
+
+
 
       // Create header row
       const headerRow = document.createElement("tr");
@@ -150,15 +158,20 @@ document.addEventListener("DOMContentLoaded", function () {
          }
 
          return {
-            "Order ID": row["Order ID"],
-            "No. Order Items": row["No. Order Items"],
-            "Order Date": row["Order Date"],
             "Product(s) name": row["Product(s) name"],
+            "No. Order Items": row["No. Order Items"],
+            "C": "",
+            "Order Date": row["Order Date"],
             "IMEI / Serial number": row["IMEI / Serial number"],
-            Country: row.Country,
+            Shipment: row.Shipment,
             "Settlement Total paid": row["Settlement Total paid"]
                .replace(/\s[A-Z]{3}/, "")
                .replace(".", ","),
+            "H": "",
+            "I": "",
+            "J": "",
+            "Order ID": row["Order ID"],
+            Country: row.Country,
          };
       });
    }
